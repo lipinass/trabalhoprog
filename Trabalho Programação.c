@@ -5,7 +5,7 @@
 
 struct Encomenda {
     char Codigo[20];
-    char Destinatario[50];
+    char Destinatario[120];
     char Destino[50];
     char DatadeEnvio[11];
     char Transportadora[50];
@@ -16,7 +16,7 @@ struct Status {
     char localidade[50];
     char Status[50];
     char data_hora[30];
-    char previsao[11];  // Ajustei o tamanho para 11 (dd/mm/aaaa + '\0')
+    char previsao[11]; 
 };
 
 void NovaEncomenda(struct Encomenda encomenda) {
@@ -83,11 +83,11 @@ int main() {
         printf("\n/------- Sistema de Rastreamento -------/\n");
         printf("1. Registrar novo pacote.\n");
         printf("2. Atualizar status do pacote.\n");
-        printf("3. Buscar pacote.\n");
+        printf("3. Rastrear pacote.\n");
         printf("4. Sair.\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
-        getchar();  // Limpar o '\n' deixado pelo scanf
+        getchar(); 
 
         switch (opcao) {
             case 1:
@@ -100,7 +100,7 @@ int main() {
                 encomenda.Destinatario[strcspn(encomenda.Destinatario, "\n")] = '\0';
 
                 printf("\nDigite o destino: \n");
-                fgets(encomenda.Destino, 50, stdin);
+                fgets(encomenda.Destino, 120, stdin);
                 encomenda.Destino[strcspn(encomenda.Destino, "\n")] = '\0';
 
                 printf("\nDigite a data de envio (ddmmaaaa): \n");
@@ -114,30 +114,59 @@ int main() {
                 NovaEncomenda(encomenda);
                 break;
 
-            case 2:
-                printf("\nDigite o codigo de rastreamento do pacote: \n");
-                fgets(status.Codigo, 20, stdin);
-                status.Codigo[strcspn(status.Codigo, "\n")] = '\0';
+case 2:
+    printf("\nDigite o codigo de rastreamento do pacote: \n");
+    fgets(status.Codigo, 20, stdin);
+    status.Codigo[strcspn(status.Codigo, "\n")] = '\0';
 
-                printf("\nDigite a localizacao atual do pacote: \n");
-                fgets(status.localidade, 50, stdin);
-                status.localidade[strcspn(status.localidade, "\n")] = '\0';
+    printf("\nDigite a localizacao atual do pacote: \n");
+    fgets(status.localidade, 50, stdin);
+    status.localidade[strcspn(status.localidade, "\n")] = '\0';
 
-                printf("\nDigite o status do pacote: \n");
-                fgets(status.Status, 50, stdin);
-                status.Status[strcspn(status.Status, "\n")] = '\0';
+    printf("\nEscolha o status do pacote:\n");
+    printf("1. Em separacao\n");
+    printf("2. Enviado\n");
+    printf("3. Em rota de entrega\n");
+    printf("4. Entregue\n");
+    int escolha_status;
+    scanf("%d", &escolha_status);
+    getchar(); 
 
-                printf("\nDigite a data e hora do status (ddmmaaaa hhmm): \n");
-                fgets(status.data_hora, 30, stdin);
-                status.data_hora[strcspn(status.data_hora, "\n")] = '\0';
 
-                printf("\nDigite a previsao de entrega (dd/mm/aaaa): \n");
-                fgets(status.previsao, 11, stdin);  // Usei o tamanho de 11 caracteres
-                status.previsao[strcspn(status.previsao, "\n")] = '\0';  // Remove o '\n' final
+    if (escolha_status == 1) {
+        sprintf(status.Status, "Em separacao");
+    } else if (escolha_status == 2) {
+        sprintf(status.Status, "Enviado");
+    } else if (escolha_status == 3) {
+        sprintf(status.Status, "Em rota de entrega");
+    } else if (escolha_status == 4) {
+        sprintf(status.Status, "Entregue");
+    } else {
+        printf("Opção inválida. Status definido como 'Indefinido'.\n");
+        sprintf(status.Status, "Indefinido");
+    }
 
-                atualizar_status(status);
-                break;
+    printf("\nDigite a data e hora do status (dd/mm/aaaa hhmm): \n");
+    fgets(status.data_hora, 20, stdin);
+    status.data_hora[strcspn(status.data_hora, "\n")] = '\0';
 
+    printf("\nDigite a previsao de entrega (dd/mm/aaaa): \n");
+    fgets(status.previsao, 20, stdin);
+    status.previsao[strcspn(status.previsao, "\n")] = '\0';
+
+    atualizar_status(status);
+    break;
+
+    printf("\nDigite a data e hora do status (ddmmaaaa hhmm): \n");
+    fgets(status.data_hora, 20, stdin);
+    status.data_hora[strcspn(status.data_hora, "\n")] = '\0';
+
+    printf("\nDigite a previsao de entrega (dd/mm/aaaa): \n");
+    fgets(status.previsao, 20, stdin);
+    status.previsao[strcspn(status.previsao, "\n")] = '\0';
+
+    atualizar_status(status);
+    break;
             case 3:
                 printf("\nDigite o codigo de rastreamento da sua encomenda: \n");
                 fgets(Codigo, 24, stdin);
@@ -157,4 +186,3 @@ int main() {
 
     return 0;
 }
-
