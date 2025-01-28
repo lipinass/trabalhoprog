@@ -73,6 +73,45 @@ void buscar_status(char *codigo_rastreamento) {
     fclose(arquivo);
 }
 
+void buscar_ultimo_status(char *codigo_rastreamento) {
+    FILE *arquivo = fopen("logs.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro: O arquivo de logs não foi encontrado. Registre um status antes de realizar uma busca.\n");
+        return;
+    }
+
+    struct Status status;
+    struct Status ultimo_status; 
+    int encontrado = 0;
+
+
+    ultimo_status.previsao[0] = '\0';
+
+    while (fscanf(arquivo, "%[^,],%[^,],%[^,],%[^,],%[^\n]\n", 
+                  status.Codigo, status.localidade, status.Status, status.data_hora, status.previsao) != EOF) {
+        if (strcmp(status.Codigo, codigo_rastreamento) == 0) {
+            encontrado = 1;
+            ultimo_status = status; 
+        }
+    }
+
+    fclose(arquivo);
+
+    if (encontrado) {
+        printf("\n-------------------------------------");
+        printf("\nÚltimo status registrado:\n");
+        printf("Data e Hora: %s\n", ultimo_status.data_hora);
+        printf("Codigo de rastreamento: %s\n", ultimo_status.Codigo);
+        printf("Localização: %s\n", ultimo_status.localidade);
+        printf("Status: %s\n", ultimo_status.Status);
+        printf("Previsão de entrega: %s\n", ultimo_status.previsao[0] ? ultimo_status.previsao : "Não informada");
+        printf("-------------------------------------\n");
+    } else {
+        printf("Encomenda com o código de rastreamento %s não encontrada.\n", codigo_rastreamento);
+    }
+}
+
+
 int main() {
     int opcao;
     struct Encomenda encomenda;
@@ -80,14 +119,15 @@ int main() {
     char Codigo[20];
 
     while (1) {
-        printf("\n/------- Sistema de Rastreamento -------/\n");
-        printf("1. Registrar novo pacote.\n");
-        printf("2. Atualizar status do pacote.\n");
-        printf("3. Rastrear pacote.\n");
-        printf("4. Sair.\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-        getchar(); 
+    printf("\n/------- Sistema de Rastreamento -------/\n");
+    printf("1. Registrar novo pacote.\n");
+    printf("2. Atualizar status do pacote.\n");
+    printf("3. Buscar todos os status do pacote.\n");
+    printf("4. Buscar ultimo status do pacote.\n"); // Nova opção
+    printf("5. Sair.\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &opcao);
+    getchar(); 
 
         switch (opcao) {
             case 1:
@@ -175,10 +215,17 @@ case 2:
                 buscar_status(Codigo);
                 break;
 
-            case 4:
-                printf("\nSaindo do sistema.\n");
-                exit(0);
+            case 4: 
+            printf("\nDigite o codigo da sua encomenda: \n");
+            fgets(Codigo, 20, stdin);
+            Codigo[strcspn(Codigo, "\n")] = '\0';
 
+            buscar_ultimo_status(Codigo);
+            break;
+
+        case 5:
+            printf("\nSaindo do sistema.\n");
+            exit(0);
             default:
                 printf("\nOpcao invalida, tente novamente.\n");
         }
