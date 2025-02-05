@@ -125,7 +125,7 @@ int main() {
     printf("3. Buscar todos os status do pacote.\n");
     printf("4. Buscar ultimo status do pacote.\n"); // Nova opção
     printf("5. Sair.\n");
-    printf("Escolha uma opção: ");
+    printf("Escolha uma opcao: ");
     scanf("%d", &opcao);
     getchar(); 
 
